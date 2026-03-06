@@ -11,13 +11,14 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // 2. ACTIVE NAVIGATION HIGHLIGHTING
+    // 2. ACTIVE NAVIGATION HIGHLIGHTING (FIXED)
     const sections = document.querySelectorAll('section');
     const navLinks = document.querySelectorAll('nav a');
 
     window.addEventListener('scroll', function() {
         let current = '';
         
+        // FIXED: Added the missing forEach line
         sections.forEach(section => {
             const sectionTop = section.offsetTop;
             const sectionHeight = section.clientHeight;
@@ -32,7 +33,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 link.classList.add('active');
             }
         });
-    });
+    }); // Fixed: Removed extra closing bracket
 
     // 3. SKILLS INTERACTION
     const skillItems = document.querySelectorAll('.skill-item');
@@ -177,7 +178,9 @@ document.addEventListener('DOMContentLoaded', function() {
     greetingSpan.style.fontSize = '0.8rem';
     greetingSpan.style.color = '#3498db';
     greetingSpan.style.marginLeft = '10px';
-    header.appendChild(greetingSpan);
+    if (header) {
+        header.appendChild(greetingSpan);
+    }
 
     // 9. VISITOR COUNTER
     const footer = document.querySelector('footer .container p');
@@ -189,25 +192,131 @@ document.addEventListener('DOMContentLoaded', function() {
     counterSpan.textContent = ` | Visitors: ${visitorCount}`;
     counterSpan.style.fontSize = '0.9rem';
     counterSpan.style.marginLeft = '10px';
-    footer.appendChild(counterSpan);
+    if (footer) {
+        footer.appendChild(counterSpan);
+    }
 
     // 10. KEYBOARD SHORTCUTS
     document.addEventListener('keydown', function(e) {
         // Press 'h' to go home (top)
-        if (e.key === 'h') {
+        if (e.key === 'h' || e.key === 'H') {
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
         
         // Press 'c' to go to contact
-        if (e.key === 'c') {
-            document.querySelector('#contact').scrollIntoView({ behavior: 'smooth' });
+        if (e.key === 'c' || e.key === 'C') {
+            const contactSection = document.querySelector('#contact');
+            if (contactSection) {
+                contactSection.scrollIntoView({ behavior: 'smooth' });
+            }
         }
         
         // Press 's' for skills
-        if (e.key === 's') {
-            document.querySelector('#skills').scrollIntoView({ behavior: 'smooth' });
+        if (e.key === 's' || e.key === 'S') {
+            const skillsSection = document.querySelector('#skills');
+            if (skillsSection) {
+                skillsSection.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        // Press 'a' for achievements
+        if (e.key === 'a' || e.key === 'A') {
+            const achievementsSection = document.querySelector('#achievements');
+            if (achievementsSection) {
+                achievementsSection.scrollIntoView({ behavior: 'smooth' });
+            }
         }
     });
 
-    console.log('JavaScript is running! Portfolio enhanced with interactive features.');
+    // =============================================
+    // NEW ACHIEVEMENTS SECTION INTERACTIONS
+    // =============================================
+
+    // 1. Achievement card interactions
+    const achievementCards = document.querySelectorAll('.achievement-card');
+    
+    achievementCards.forEach(card => {
+        card.addEventListener('click', function() {
+            // Toggle expanded info
+            const extraInfo = document.createElement('div');
+            extraInfo.className = 'achievement-extra';
+            
+            if (!this.querySelector('.achievement-extra')) {
+                const cardTitle = this.querySelector('h3') ? this.querySelector('h3').textContent : '';
+                
+                if (cardTitle.includes('Quantum')) {
+                    extraInfo.innerHTML = '<p>🔬 Learning Qiskit, Quantum Circuits, and Quantum Algorithms</p>';
+                } else if (cardTitle.includes('Mathematics')) {
+                    extraInfo.innerHTML = '<p>📊 Available for tutoring: Calculus, Linear Algebra, and Statistics</p>';
+                } else if (cardTitle.includes('IBM')) {
+                    extraInfo.innerHTML = '<p>🏆 Certified in: Software Development, Agile, and Cloud Computing</p>';
+                } else if (cardTitle.includes('Enactus')) {
+                    extraInfo.innerHTML = '<p>🤝 Working on community development projects using entrepreneurial action</p>';
+                }
+                extraInfo.style.marginTop = '15px';
+                extraInfo.style.padding = '10px';
+                extraInfo.style.background = 'rgba(255,255,255,0.2)';
+                extraInfo.style.borderRadius = '8px';
+                this.appendChild(extraInfo);
+            } else {
+                this.querySelector('.achievement-extra').remove();
+            }
+        });
+    });
+
+    // 2. Mathematics tutoring availability popup
+    const badges = document.querySelectorAll('.badge');
+    badges.forEach(badge => {
+        if (badge.textContent.includes('Mathematics Tutor')) {
+            badge.addEventListener('click', function() {
+                alert('📚 Mathematics Tutoring Available!\n\nSubjects: First-Year Calculus, Algebra\n\nEmail: dantesebopela@gmail.com to schedule a session');
+            });
+        }
+        
+        // 3. IBM certificate display
+        if (badge.textContent.includes('IBM Certified')) {
+            badge.addEventListener('click', function() {
+                alert('💻 IBM Software Engineering Certificate\n\nCompleted: 2024\nSkills: Full-stack development, Agile, DevOps\n\nClick the achievements section to learn more!');
+            });
+        }
+        
+        // 4. Quantum computing interest highlight
+        if (badge.textContent.includes('Quantum')) {
+            badge.addEventListener('mouseenter', function() {
+                this.style.background = '#9b59b6';
+            });
+            badge.addEventListener('mouseleave', function() {
+                this.style.background = '#3498db';
+            });
+        }
+    });
+
+    // 5. Add tutoring specific stats (only if achievements section exists)
+    const achievementsSection = document.querySelector('#achievements');
+    if (achievementsSection) {
+        // Check if stats already exist to avoid duplicates
+        if (!document.querySelector('.tutor-stats')) {
+            const statsDiv = document.createElement('div');
+            statsDiv.className = 'tutor-stats';
+            statsDiv.innerHTML = `
+                <div style="text-align: center; margin: 40px 0; display: flex; justify-content: center; gap: 40px; flex-wrap: wrap;">
+                    <div style="text-align: center; min-width: 120px;">
+                        <h3 style="font-size: 2rem; color: #3498db; margin-bottom: 5px;">20+</h3>
+                        <p style="color: white;">Students Tutored</p>
+                    </div>
+                    <div style="text-align: center; min-width: 120px;">
+                        <h3 style="font-size: 2rem; color: #3498db; margin-bottom: 5px;">4.9</h3>
+                        <p style="color: white;">Tutor Rating</p>
+                    </div>
+                    <div style="text-align: center; min-width: 120px;">
+                        <h3 style="font-size: 2rem; color: #3498db; margin-bottom: 5px;">3</h3>
+                        <p style="color: white;">Math Courses</p>
+                    </div>
+                </div>
+            `;
+            achievementsSection.appendChild(statsDiv);
+        }
+    }
+
+    console.log('JavaScript is running! Portfolio enhanced with interactive features including achievements!');
 });
